@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoSort AI - Smart Waste Segregation System helps identify waste types from uploaded images and provides proper recycling guidance using AI.">
+    <title>EcoSort AI – Smart Waste Segregation System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- App Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <span class="logo-text">EcoSort <span class="accent-text">AI</span></span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#home" class="nav-link active" id="nav-home">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#scan" class="nav-link" id="nav-scan">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Scan Waste</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dashboard" class="nav-link" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#history" class="nav-link" id="nav-history">
+                            <i class="fa-solid fa-history"></i>
+                            <span>Scan History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#about" class="nav-link" id="nav-about">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>About</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contact" class="nav-link" id="nav-contact">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Contact</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-badge">
+                    <div class="user-avatar">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <div class="user-info">
+                        <p class="user-name">Eco Defender</p>
+                        <p class="user-role">Level 1 Ranger</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Body -->
+        <main class="main-content">
+            
+            <!-- Header bar -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <!-- Global Search Bar -->
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="global-search" placeholder="Search disposal info for battery, glass, cardboard..." autocomplete="off">
+                            <button class="voice-btn" id="voice-search-btn" title="Search with Voice">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+                        <!-- Search Autocomplete Dropdown -->
+                        <div class="search-dropdown" id="search-dropdown">
+                            <!-- Items populated via JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Dark Mode Toggle -->
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon moon-icon"></i>
+                        <i class="fa-solid fa-sun sun-icon"></i>
+                    </button>
+                    <!-- User Score Indicator -->
+                    <div class="eco-score-badge" title="Carbon CO2 footprint saved by recycling!">
+                        <i class="fa-solid fa-seedling"></i>
+                        <span id="header-eco-score">0.00</span> kg CO₂ Saved
+                    </div>
+                </div>
+            </header>
+
+            <!-- Notification Toast Container -->
+            <div class="toast-container" id="toast-container"></div>
+
+            <!-- SPA Pages Container -->
+            <div class="page-container">
+
+                <!-- 1. HOME PAGE VIEW -->
+                <section class="page-section active" id="page-home">
+                    <!-- Hero Section -->
+                    <div class="hero-banner">
+                        <div class="hero-content">
+                            <span class="badge badge-accent">AI-Powered Recycling</span>
+                            <h1>Sort Smart. <br>Save the Planet.</h1>
+                            <p>EcoSort AI automatically classifies household trash and gives clear disposal instructions, avoiding pollution and helping you lower your carbon footprint.</p>
+                            <div class="hero-buttons">
+                                <a href="#scan" class="btn btn-primary" onclick="navigateToPage('#scan')">
+                                    <i class="fa-solid fa-camera"></i> Scan Now
+                                </a>
+                                <a href="#about" class="btn btn-secondary" onclick="navigateToPage('#about')">
+                                    Learn More <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="hero-illustration">
+                            <!-- Dynamic illustration cards using icons and visual effects -->
+                            <div class="eco-illustration-container">
+                                <div class="floating-circle circle-1"></div>
+                                <div class="floating-circle circle-2"></div>
+                                <div class="illustration-card main-ill">
+                                    <i class="fa-solid fa-recycle ill-icon rotate-slow"></i>
+                                </div>
+                                <div class="illustration-card mini-ill mini-1">
+                                    <i class="fa-solid fa-apple-whole"></i>
+                                </div>
+                                <div class="illustration-card mini-ill mini-2">
+                                    <i class="fa-solid fa-wine-glass"></i>
+                                </div>
+                                <div class="illustration-card mini-ill mini-3">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App Quick Stats -->
+                    <div class="stats-grid-compact">
+                        <div class="card card-compact glass-card">
+                            <div class="card-icon icon-green"><i class="fa-solid fa-camera-retro"></i></div>
+                            <div class="card-info">
+                                <h3 id="home-stat-scans">0</h3>
+                                <p>Scans Done</p>
+                            </div>
+                        </div>
+                        <div class="card card-compact glass-card">
+                            <div class="card-icon icon-blue"><i class="fa-solid fa-arrow-rotate-left"></i></div>
+                            <div class="card-info">
+                                <h3 id="home-stat-rate">0%</h3>
+                                <p>Recycling Rate</p>
+                            </div>
+                        </div>
+                        <div class="card card-compact glass-card">
+                            <div class="card-icon icon-yellow"><i class="fa-solid fa-cloud"></i></div>
+                            <div class="card-info">
+                                <h3 id="home-stat-carbon">0.00 kg</h3>
+                                <p>CO₂ Saved</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Guide Grid -->
+                    <div class="section-title-wrapper">
+                        <h2>Supported Waste Categories</h2>
+                        <p>We classify items into 7 standard types for localized recycling guidelines.</p>
+                    </div>
+
+                    <div class="categories-grid">
+                        <div class="card category-info-card glass-card border-plastic">
+                            <i class="fa-solid fa-bottle-water cat-card-icon text-plastic"></i>
+                            <h3>Plastic</h3>
+                            <p>Water bottles, tubs, bags, food wrappers.</p>
+                            <span class="badge badge-plastic">Recyclable</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-paper">
+                            <i class="fa-solid fa-file-lines cat-card-icon text-paper"></i>
+                            <h3>Paper</h3>
+                            <p>Cardboard, newspaper, dry paper packaging.</p>
+                            <span class="badge badge-paper">Recyclable</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-glass">
+                            <i class="fa-solid fa-glass-water cat-card-icon text-glass"></i>
+                            <h3>Glass</h3>
+                            <p>Wine bottles, beverage containers, sauce jars.</p>
+                            <span class="badge badge-glass">Recyclable</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-metal">
+                            <i class="fa-solid fa-can-food cat-card-icon text-metal"></i>
+                            <h3>Metal</h3>
+                            <p>Aluminum soda cans, tin food cans, foil.</p>
+                            <span class="badge badge-metal">Recyclable</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-organic">
+                            <i class="fa-solid fa-apple-whole cat-card-icon text-organic"></i>
+                            <h3>Organic Waste</h3>
+                            <p>Food scraps, vegetable peels, garden waste.</p>
+                            <span class="badge badge-organic">Compostable</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-ewaste">
+                            <i class="fa-solid fa-laptop cat-card-icon text-ewaste"></i>
+                            <h3>E-Waste</h3>
+                            <p>Phones, computers, wiring, small appliances.</p>
+                            <span class="badge badge-ewaste">Special Recycle</span>
+                        </div>
+                        <div class="card category-info-card glass-card border-hazardous">
+                            <i class="fa-solid fa-skull-crossbones cat-card-icon text-hazardous"></i>
+                            <h3>Hazardous</h3>
+                            <p>Batteries, CFL bulbs, aerosol spray cans, paints.</p>
+                            <span class="badge badge-hazardous">Toxic / Drop-off</span>
+                        </div>
+                    </div>
+
+                    <!-- Leaflet map container -->
+                    <div class="map-section-wrapper glass-card">
+                        <div class="section-title-wrapper">
+                            <h2><i class="fa-solid fa-map-location-dot"></i> Eco-Map: Recycling Depots</h2>
+                            <p>Find specialized drop-off points, hazardous centers, and compost locations nearby.</p>
+                        </div>
+                        <div class="map-layout">
+                            <div id="map-container"></div>
+                            <div class="map-legend">
+                                <h3>Recycling Center Locations</h3>
+                                <ul id="recycling-locations-list" class="locations-list">
+                                    <!-- Populated in JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- 2. SCAN WASTE PAGE VIEW -->
+                <section class="page-section" id="page-scan">
+                    <div class="page-title">
+                        <h2><i class="fa-solid fa-camera"></i> AI Waste Classifier</h2>
+                        <p>Upload a photo of any item to determine its waste type and see correct disposal guidelines.</p>
+                    </div>
+
+                    <div class="scan-grid">
+                        
+                        <!-- Upload column -->
+                        <div class="card scan-card glass-card">
+                            <div class="drag-drop-zone" id="drop-zone">
+                                <input type="file" id="image-upload" accept="image/*" class="file-input">
+                                <div class="drop-zone-content" id="drop-zone-content">
+                                    <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                                    <h3>Drag & Drop Image Here</h3>
+                                    <p>or click to browse from files</p>
+                                    <span class="formats">Supports JPG, JPEG, PNG, WEBP</span>
+                                </div>
+                                <div class="image-preview-container" id="preview-container">
+                                    <img id="image-preview" src="#" alt="Upload Preview">
+                                    <button class="remove-image-btn" id="remove-img-btn" title="Remove image">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                    </button>
+                                    <!-- Scanning animation overlay -->
+                                    <div class="scan-overlay" id="scan-overlay">
+                                        <div class="scan-line"></div>
+                                        <div class="scan-text">
+                                            <i class="fa-solid fa-atom fa-spin"></i> Analyzing Image...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scan-actions">
+                                <button class="btn btn-primary" id="analyze-btn" disabled>
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Classify Waste Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Results column -->
+                        <div class="card result-card glass-card" id="result-card-container">
+                            <div class="result-placeholder" id="result-placeholder">
+                                <i class="fa-solid fa-robot"></i>
+                                <h3>Awaiting Classification</h3>
+                                <p>Select and classify an image in the upload card to view AI output details.</p>
+                            </div>
+
+                            <div class="result-output-content" id="result-output" style="display: none;">
+                                <div class="result-header">
+                                    <div>
+                                        <span class="badge" id="result-category-badge">Plastic</span>
+                                        <h3 id="result-title">Plastic Waste</h3>
+                                    </div>
+                                    <div class="recyclable-status-tag" id="result-recyclable-tag">
+                                        <i class="fa-solid fa-circle-check"></i> Recyclable
+                                    </div>
+                                </div>
+
+                                <div class="confidence-section">
+                                    <div class="confidence-text">
+                                        <span>AI Classification Confidence</span>
+                                        <strong id="result-confidence">95%</strong>
+                                    </div>
+                                    <div class="confidence-bar-container">
+                                        <div class="confidence-bar-fill" id="result-confidence-bar" style="width: 95%"></div>
+                                    </div>
+                                    <small class="detected-label">Detected tag: <em id="result-raw-label">water bottle</em></small>
+                                </div>
+
+                                <!-- Carbon savings badge -->
+                                <div class="carbon-savings-box">
+                                    <div class="carbon-leaf">
+                                        <i class="fa-solid fa-seedling"></i>
+                                    </div>
+                                    <div class="carbon-info">
+                                        <h4>+ <span id="result-carbon-savings">0.10</span> kg CO₂ Saved</h4>
+                                        <p>Estimated greenhouse gas avoided by recycling this item correctly.</p>
+                                    </div>
+                                </div>
+
+                                <div class="details-accordion">
+                                    <div class="accordion-item expanded">
+                                        <div class="accordion-header">
+                                            <i class="fa-solid fa-recycle"></i>
+                                            <span>Correct Disposal Method</span>
+                                        </div>
+                                        <div class="accordion-body" id="result-disposal">
+                                            Wash, compress, and place in the green recycling bin.
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item expanded">
+                                        <div class="accordion-header">
+                                            <i class="fa-solid fa-leaf"></i>
+                                            <span>Environmental Impact</span>
+                                        </div>
+                                        <div class="accordion-body" id="result-impact">
+                                            Prevents ocean microplastics and saves crude oil reserves.
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item expanded danger-alert" id="result-safety-wrapper" style="display: none;">
+                                        <div class="accordion-header text-hazardous">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            <span>Safety Precautions</span>
+                                        </div>
+                                        <div class="accordion-body" id="result-safety">
+                                            Wear protective gloves. Keep in original packaging. Do not stack with household waste.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- 3. DASHBOARD PAGE VIEW -->
+                <section class="page-section" id="page-dashboard">
+                    <div class="page-title">
+                        <h2><i class="fa-solid fa-gauge-high"></i> Recycling Analytics Dashboard</h2>
+                        <p>Track your scanning habits, waste segregation rates, and environmental contributions.</p>
+                    </div>
+
+                    <!-- KPI Cards Grid -->
+                    <div class="stats-grid">
+                        <div class="card stat-card glass-card">
+                            <div class="stat-icon bg-green-light"><i class="fa-solid fa-images"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Scans</p>
+                                <h3 class="stat-val" id="dash-total-scans">0</h3>
+                            </div>
+                        </div>
+                        <div class="card stat-card glass-card">
+                            <div class="stat-icon bg-blue-light"><i class="fa-solid fa-arrows-spin"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Recycling Rate</p>
+                                <h3 class="stat-val" id="dash-recycling-rate">0%</h3>
+                            </div>
+                        </div>
+                        <div class="card stat-card glass-card">
+                            <div class="stat-icon bg-emerald-light"><i class="fa-solid fa-cloud-sun"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Carbon Offset</p>
+                                <h3 class="stat-val" id="dash-carbon-offset">0.00 kg</h3>
+                            </div>
+                        </div>
+                        <div class="card stat-card glass-card">
+                            <div class="stat-icon bg-teal-light"><i class="fa-solid fa-award"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Eco Score</p>
+                                <h3 class="stat-val" id="dash-eco-score">Level 1</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts row -->
+                    <div class="charts-grid">
+                        <div class="card chart-card glass-card">
+                            <h3>Waste Stream Distribution</h3>
+                            <p class="chart-subtitle">Breakdown of scanned materials by category</p>
+                            <div class="chart-wrapper">
+                                <canvas id="distribution-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card chart-card glass-card">
+                            <h3>Daily Scan Activity</h3>
+                            <p class="chart-subtitle">Number of trash scans logged over the last 7 days</p>
+                            <div class="chart-wrapper">
+                                <canvas id="activity-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- 4. SCAN HISTORY PAGE VIEW -->
+                <section class="page-section" id="page-history">
+                    <div class="page-title-actions">
+                        <div class="page-title">
+                            <h2><i class="fa-solid fa-history"></i> Scanning Logs</h2>
+                            <p>Review the list of your past scans, downloaded images, and categories saved in SQLite.</p>
+                        </div>
+                        <div class="history-actions" id="history-actions-bar" style="display: none;">
+                            <a href="/api/history/download" class="btn btn-secondary btn-icon" id="download-csv-btn">
+                                <i class="fa-solid fa-file-csv"></i> Download CSV
+                            </a>
+                            <button class="btn btn-danger btn-icon" id="clear-history-btn">
+                                <i class="fa-solid fa-trash-can"></i> Clear History
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="empty-state glass-card" id="history-empty">
+                        <i class="fa-solid fa-box-open"></i>
+                        <h3>History is Empty</h3>
+                        <p>You have not segregated any waste logs yet. Start by taking a photo of a scrap item!</p>
+                        <a href="#scan" class="btn btn-primary" onclick="navigateToPage('#scan')">
+                            <i class="fa-solid fa-camera"></i> Scan First Item
+                        </a>
+                    </div>
+
+                    <!-- Logs grid -->
+                    <div class="history-grid" id="history-list">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </section>
+
+
+                <!-- 5. ABOUT PAGE VIEW -->
+                <section class="page-section" id="page-about">
+                    <div class="page-title">
+                        <h2><i class="fa-solid fa-circle-info"></i> About EcoSort AI</h2>
+                        <p>Empowering individuals to handle recycling efficiently and safely through artificial intelligence.</p>
+                    </div>
+
+                    <div class="about-grid">
+                        <div class="card about-main glass-card">
+                            <h3>Our Core Vision</h3>
+                            <p>Municipal waste sorting is the cornerstone of effective recycling. However, mixed materials, chemical hazards, and confusing sorting codes lead to 70% of recyclable items ending up in carbon-emitting landfills.</p>
+                            <p><strong>EcoSort AI</strong> acts as a personal eco-assistant. By placing automated image classification at the fingertips of users, it takes the guesswork out of sorting plastic numbers, metal cans, glass jars, hazardous batteries, and food scraps.</p>
+                            
+                            <hr class="divider">
+
+                            <h3>Model & Technology Stack</h3>
+                            <div class="tech-grid">
+                                <div class="tech-item">
+                                    <div class="tech-logo"><i class="fa-solid fa-gears"></i></div>
+                                    <div>
+                                        <h4>MobileNetV2 CNN</h4>
+                                        <p>Pre-trained Convolutional Neural Network deployed via lightweight ONNX execution runtime for CPU speeds under 100ms.</p>
+                                    </div>
+                                </div>
+                                <div class="tech-item">
+                                    <div class="tech-logo"><i class="fa-brands fa-python"></i></div>
+                                    <div>
+                                        <h4>Flask & SQLite</h4>
+                                        <p>Python Flask coordinates request files, routes search indexing, and queries SQLite records for localized caching.</p>
+                                    </div>
+                                </div>
+                                <div class="tech-item">
+                                    <div class="tech-logo"><i class="fa-solid fa-palette"></i></div>
+                                    <div>
+                                        <h4>Glassmorphism Glass CSS</h4>
+                                        <p>A responsive layout using HSL custom color arrays, translucent card backgrounds, and backdrop-blur effects.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card about-side glass-card">
+                            <h3>Sustainability Tips</h3>
+                            <ul class="eco-tips-list">
+                                <li>
+                                    <i class="fa-solid fa-check"></i>
+                                    <div>
+                                        <strong>Rinse Clean:</strong> Residue liquids or food stains contaminate paper and can cause entire recycle batches to be discarded.
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-check"></i>
+                                    <div>
+                                        <strong>Crush and Pack:</strong> Compress metal and plastic containers before sorting. It saves transportation volume and limits carbon trucking costs.
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-check"></i>
+                                    <div>
+                                        <strong>Know Hazmat rules:</strong> Household chemicals, paints, batteries, and fluorescent bulbs contain toxic compounds. Always deliver them to special safety drop depots.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- 6. CONTACT PAGE VIEW -->
+                <section class="page-section" id="page-contact">
+                    <div class="page-title">
+                        <h2><i class="fa-solid fa-envelope"></i> Contact & Feedback</h2>
+                        <p>Submit suggestions, query recycling centers, or request partnerships for regional segregation databases.</p>
+                    </div>
+
+                    <div class="contact-grid">
+                        <!-- Info Card -->
+                        <div class="card contact-info glass-card">
+                            <h3>Let's collaborate</h3>
+                            <p>Are you a municipal representative, school coordinator, or local recycling center manager? Contact us to sync regional scheduling or map updates.</p>
+                            
+                            <ul class="contact-details-list">
+                                <li>
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>EcoSort Headquarters, Green Tech Park, Suite 402</span>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-phone"></i>
+                                    <span>+1 (800) 555-ECO-SORT</span>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <span>support@ecosort-ai.org</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Form Card -->
+                        <div class="card contact-form-card glass-card">
+                            <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                                <div class="form-group">
+                                    <label for="contact-name">Full Name</label>
+                                    <input type="text" id="contact-name" placeholder="John Doe" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-email">Email Address</label>
+                                    <input type="email" id="contact-email" placeholder="john@example.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-message">Your Message</label>
+                                    <textarea id="contact-message" rows="5" placeholder="How can we help you or improve the segregation app?" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="contact-submit-btn">
+                                    <i class="fa-solid fa-paper-plane"></i> Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Floating AI Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbot-widget">
+        <!-- Floating chat trigger bubble -->
+        <button class="chatbot-trigger" id="chatbot-trigger-btn" title="Ask EcoSort AI Chatbot">
+            <i class="fa-solid fa-comments"></i>
+            <span class="chat-pulse"></span>
+        </button>
+
+        <!-- Chat panel window -->
+        <div class="chatbot-panel" id="chatbot-panel">
+            <div class="chatbot-header">
+                <div class="chatbot-title-info">
+                    <i class="fa-solid fa-robot header-bot-icon"></i>
+                    <div>
+                        <h4>EcoSort Assistant</h4>
+                        <span class="status-indicator"><span class="dot"></span> Online</span>
+                    </div>
+                </div>
+                <button class="chatbot-close" id="chatbot-close-btn" aria-label="Close Chat">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-body" id="chatbot-body">
+                <div class="chat-message bot-msg">
+                    Hello! 👋 I'm EcoSort AI, your personal recycling assistant. Ask me anything about waste sorting, carbon footprint savings, or composting!
+                </div>
+                <!-- Chat messages appended via JS -->
+            </div>
+
+            <!-- Quick Suggestions Row -->
+            <div class="chat-suggestions" id="chat-suggestions">
+                <button class="suggest-btn" data-query="How to recycle batteries?">🔋 Recycle Batteries</button>
+                <button class="suggest-btn" data-query="Can I recycle pizza boxes?">🍕 Pizza Boxes</button>
+                <button class="suggest-btn" data-query="What is composting?">🌱 Composting</button>
+                <button class="suggest-btn" data-query="Carbon footprint facts">🌍 CO₂ Savings</button>
+            </div>
+
+            <div class="chatbot-footer">
+                <div class="chat-input-box">
+                    <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+                    <button class="voice-btn" id="chat-voice-btn" title="Speak message">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button class="chat-send-btn" id="chat-send-btn" title="Send message">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    <!-- Custom Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal" style="display: none;">
+        <div class="card modal-card glass-card">
+            <div class="modal-header">
+                <h3 id="confirm-modal-title">Confirm Action</h3>
+                <button class="modal-close-btn" id="confirm-modal-close" aria-label="Close Modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-modal-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirm-modal-cancel">Cancel</button>
+                <button class="btn btn-danger" id="confirm-modal-confirm">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ChartJS library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Leaflet JS library CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Project JavaScript files -->
+    <script src="/static/js/voice.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/app.js"></script>
+
+</body>
+</html>
